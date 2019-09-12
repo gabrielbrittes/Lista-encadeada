@@ -358,7 +358,38 @@ void inverte( NODO** l ){
  ***************************************************/ 
 void consulta_nome( NODO* l ){
      
-
+int achou = 0;
+    NODO* listao; // instancia do nodo
+	// ultimo registro sempre aponta para NULL
+	char nome[30]; // variavel para comparar com a salva na lista
+    printf( "\n Digite o nome: " );
+    scanf("%s", &nome);
+    /*
+    if (listao == NULL){ // se for igual a null está vazia
+    	printf ("Lista vazia!");
+	}else{
+		while(listao != NULL){ // para percorrer todas posições 
+		// começo do while	
+		if(strcmp(nome, l->info.nome) == 0){
+			achou++; // contador para 
+			printf("Nome encontrado %s", l->info.nome); // imprimi o nome encontrado	
+			getchar();
+		}
+	}
+     listao = listao->prox; // segue fluxo		
+	*/
+		for(; l != NULL; l = l->prox ){ // percorre 1 registro apos o outros
+			    if(strcmp(nome, l->info.nome) == 0)
+				printf("Nome encontrado %s", l->info.nome); // imprimi o nome encontrado
+				achou++;
+				getchar();
+		}
+	
+    if (achou == 0){
+    	printf("Não achou!");
+    	getchar();
+	}
+	
 }
 
 
