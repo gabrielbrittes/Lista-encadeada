@@ -253,9 +253,29 @@ void destroi_lista  ( NODO* *l ){
  * saida   : lista com novo registro            *
  ************************************************/ 
 void inclui_fim( NODO* *l ){
+    
      
+	NODO *no= (NODO* ) malloc (sizeof(NODO));
+	if( no != NULL ){
+		entrada_dados( no );
+		NODO *p= *l;
+		if( *l != NULL){
+		
+		
+		while(p->prox != NULL){
+		
+			p= p->prox;
+		}
+		p->prox = no;
+	}else
+		*l= no;
+				
+		printf("Registro incluido! ");	
+		
+	}else
+		printf("Lista cheia!!");
+} 
 
-}
 
 
 
@@ -356,40 +376,29 @@ void inverte( NODO** l ){
  * entrada : lista                                 *
  * saida   : lista                                 *
  ***************************************************/ 
-void consulta_nome( NODO* l ){
-     
-int achou = 0;
-    NODO* listao; // instancia do nodo
-	// ultimo registro sempre aponta para NULL
-	char nome[30]; // variavel para comparar com a salva na lista
-    printf( "\n Digite o nome: " );
-    scanf("%s", &nome);
-    /*
-    if (listao == NULL){ // se for igual a null está vazia
-    	printf ("Lista vazia!");
-	}else{
-		while(listao != NULL){ // para percorrer todas posições 
-		// começo do while	
-		if(strcmp(nome, l->info.nome) == 0){
-			achou++; // contador para 
-			printf("Nome encontrado %s", l->info.nome); // imprimi o nome encontrado	
-			getchar();
-		}
-	}
-     listao = listao->prox; // segue fluxo		
-	*/
-		for(; l != NULL; l = l->prox ){ // percorre 1 registro apos o outros
-			    if(strcmp(nome, l->info.nome) == 0)
-				printf("Nome encontrado %s", l->info.nome); // imprimi o nome encontrado
-				achou++;
-				getchar();
-		}
-	
-    if (achou == 0){
-    	printf("Não achou!");
-    	getchar();
-	}
-	
+void consulta_nome( NODO *l ){
+       if(*l == NULL)
+       printf("Lista não encontrada");
+    else{
+        char nome[30];
+        printf("Digite o nome: ");
+        scanf("%s", &nome);    	
+        
+		NODO *p= *l; // POINT AUXILIAR    
+	    int flag= 0; // flag para avisar se encontrou nome na lista
+	    while (p != NULL){    	 // percorrer
+			  if (strcmp(nome, p->info.nome)== 0){
+			    printf("Encontrado %s", p->info.nome);
+			    getchar();
+			    flag= 1;
+			   }
+		      p= p->prox;
+		}	
+   }
+   if( flag == 0 )
+       printf("Nome não encontrado");
+   
+
 }
 
 
