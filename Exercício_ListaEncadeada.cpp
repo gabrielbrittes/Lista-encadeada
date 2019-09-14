@@ -377,6 +377,7 @@ void inverte( NODO** l ){
  * saida   : lista                                 *
  ***************************************************/ 
 void consulta_nome( NODO *l ){
+	int flag = 0;
        if(*l == NULL)
        printf("Lista não encontrada");
     else{
@@ -385,7 +386,7 @@ void consulta_nome( NODO *l ){
         scanf("%s", &nome);    	
         
 		NODO *p= *l; // POINT AUXILIAR    
-	    int flag= 0; // flag para avisar se encontrou nome na lista
+	    flag= 0; // flag para avisar se encontrou nome na lista
 	    while (p != NULL){    	 // percorrer
 			  if (strcmp(nome, p->info.nome)== 0){
 			    printf("Encontrado %s", p->info.nome);
