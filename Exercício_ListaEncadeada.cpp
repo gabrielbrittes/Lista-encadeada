@@ -94,7 +94,7 @@ int main( void ){
                     break;
                   
             case 5:  // rotina ordena lista
-                    ordena_lista( &l );
+                    ordena_lista( &l );// para alterar valores
                     break;
 
             case 6:  // rotina inclui ordenado
@@ -338,7 +338,31 @@ void exclui_nodo( NODO** l ){
  * saida   : lista ordenada por codigo             *
  ***************************************************/ 
 void ordena_lista( NODO** l ){
-     
+	
+      if( *l == NULL )                                // verifica se a lista está vazia 
+        printf( "\n Lista vazia!" );
+    else {
+        if( (*l)->prox == NULL )                    // verifica se a lista tem apenas um registro 
+             printf( "\n Lista com apenas 1 elemento!" );
+        else{
+             INFORMACAO aux;                        // auxiliar para a troca de dados
+             NODO *ant = *l;                        // posiciona ponteiro auxiliar ant (anterior) no início da lista
+             NODO *p   = ant->prox;                 // posiciona ponteiro auxiliar p (posterior) após ant, para que possa ser feita a comparação
+    
+             while( ant->prox != *l ){              // enquanto não for o último registro da lista circular
+                    while( p != *l ){               // enquanto não for o primeiro registro da lista circular
+                           if( strcmp(p->info.nome, ant->info.nome) < 0 ){ // se código de p for menor do que o código de ant, realiza a troca de conteúdo
+                               aux      = p->info;  // faz a troca (algoritmo de ordenação Método Bolha)
+                               p->info  = ant->info;
+                               ant->info= aux;
+                           } // fim if( p->info.codigo < ant.info.codigo )
+                           p= p->prox;
+                    } // fim while ( p != *l )  
+                    ant= ant->prox;                 // atualiza ponteiros, ant para para o próximo registro
+                    p= ant->prox;                   // p passa para o próximo de ant (permanece a frente do ponteiro ant)
+             } // fim while ( ant->prox != *l )                      
+         } // fim else
+    }
 
 }
 
@@ -379,7 +403,7 @@ void inverte( NODO** l ){
 void consulta_nome( NODO *l ){
 	int flag = 0;
        if(l == NULL)
-       printf("Lista não encontrada");
+       printf("\nLista não encontrada");
     else{
         char nome[30];
         printf("Digite o nome: ");
@@ -396,10 +420,9 @@ void consulta_nome( NODO *l ){
 		}	
    }
    if( flag == 0 )
-       printf("Nome não encontrado");
-   
-
-}
+       printf("\nNome não encontrado");
+       getchar();
+   }
 
 
 
