@@ -41,7 +41,11 @@ void  consulta_nome  ( NODO* l );             // consulta por nome
 void  inserir_antes  ( NODO* *l );            // insere registro antes de uma código de referência
 void  inserir_depois ( NODO* *l );            // insere registro depois de uma código de referência
 void  conta_nodo     ( NODO* *l );            // conta número de registros existentes na lista
+void ordena_selecao( NODO* *l );
 // crie sua própria função aqui!
+
+NODO* f(NODO* list, int cod);
+void  f2( NODO **l, int cod );
 
 
 /***********************************************/ 
@@ -66,7 +70,7 @@ int main( void ){
          printf( "\n [9 ]  Inserir antes                                   " );           
          printf( "\n [10]  Inserir depois                                  " );     
          printf( "\n [11]  Conta registros                                 " );           
-         printf( "\n [12]  Crie sua própria função aqui!                   " ); 
+         printf( "\n [12]  Ordena seleção                                  " ); 
          printf( "\n [13]  Gera dados                                      " );  
          printf( "\n [14]  Destroi lista                                   " );
          printf( "\n [15]  Imprime lista                                   " );
@@ -123,6 +127,7 @@ int main( void ){
 
             case 12:                  
                     // crie sua própria função aqui! 
+                    ordena_selecao( &l );
                     break;
                     
             case 13: // rotina gera dados de forma automática para povoar a lista
@@ -324,8 +329,33 @@ NODO* procura_nodo( NODO* p, int cod ){
  * entrada : lista                                 *
  * saida   : lista                                 *
  ***************************************************/ 
-void exclui_nodo( NODO** l ){
-     
+void exclui_nodo( NODO* *l ){
+      
+    int cod;                                          // código a ser excluído 
+
+    printf( "\n Código de referência: " );            // usuário informa código que deseja excluir
+    fflush( stdin );                                  // limpa buffer do teclado e faz a entrada de dados
+    scanf( "%d", &cod );              
+    
+    if( *l != NULL ){                                 // verifica se a lista está vazia 
+        NODO *no;                                     // ponteiro auxiliar para a código de referência
+        no = procura_nodo( *l, cod );                    // procura código de referencia a ser excluída
+        if(( no != NULL ) && ( cod == no->info.codigo)){ // verifica se encontrou a código na lista
+             NODO* p;                                    // ponteiro auxiliar para percorrer a lista 
+             p = *l;                                     // iniciliza o ponteiro auxiliar que irá percorrer a lista e encontrar o registro anterior ao que será excluído
+             if( p == no )                               // verifica se o registro a ser excluído é o primeiro da lista
+                 *l = p->prox;                           // faz o início da lista apontar para o próximo registro, visto que o primeiro será excluído
+             else{
+                  while( p->prox != no )                 // procura registro anterior ao que será excluído
+                         p = p->prox;         
+                  p->prox = no->prox;                    // ajusta ponteiros, faz o registro anterior àquele que será excçuído apontar para um registro posterior daquele que será excluído
+             } // fim if( p == no )
+             free( no );                                 // libera o espaço de memória que estava sendo ocupado pelo registro que foi excluído
+             printf( "\n Registro excluído!" );
+        }else // fim (( cod == no->info.codigo) && ( no != NULL ))
+             printf( "\n Nodo não encontrado!");
+    }else // fim if( *l != NULL )    
+        printf( "\n Lista vazia!" );
 
 }
 
@@ -375,7 +405,26 @@ void ordena_lista( NODO** l ){
  * saida   : lista com novo registro               *
  ***************************************************/ 
 void inclui_ordenado( NODO** l ){
-     
+	
+    NODO* p; 
+    NODO* ant;                                        // ponteiros auxiliares para percorrer a lista 
+    
+    NODO* no =  ( NODO * ) malloc ( sizeof( NODO ) ); // aloca novo espaço em memória
+    if( no != NULL ){                                 // verifica se conseguiu alocar memória para o novo registro
+            entrada_dados( no );                      // le dados
+            p = *l;                                   // possiciona ponteiro auxiliar no início para percorrer a lista 
+
+            while( ( p != NULL ) && ( no->info.codigo > p->info.codigo ) ){ // faz o laço ate achar a posição ou o final da lista (no caso em que é o maior código)
+                  ant = p;                             // guarda a posição do anterior, para fazer ajuste dos ponteiros ao final
+                  p   = p->prox;                       // percorre a lista
+            } // fim while( ( p != NULL ) && ( no->info.codigo > p->info.codigo ) )
+
+            if( p == *l )                              // verifica se auxiliar aponta para o início da lista
+                *l = no;                               // inicio da lista aponta para novo registro
+            else   
+                ant->prox = no;                        // ajuste de ponteiro para inserir na posicao ordenada
+            no->prox = p;                              // ajuste de ponteiro, inserido de forma ordenada por código
+    } // fim if( no != NULL )
 
 }
 
@@ -388,11 +437,35 @@ void inclui_ordenado( NODO** l ){
  * saida   : lista com referencia invertida        *
  ***************************************************/ 
 void inverte( NODO** l ){
-     
+	
+    NODO* p; 
+    NODO* q;                                         // ponteiros auxiliares para percorrer a lista 
+    NODO* t;                                         // ponteiros auxiliares para percorrer a lista 
+    
+    if( *l == NULL )                                 // verifica se a lista esta vazia 
+        printf( "\n Lista vazia!" );
+    else {
+         p = *l;                                     // inicializa os ponteiros auxiliares
+         if( p->prox == NULL )                       // verifica se so tem um elemento
+             printf( "\n Lista com apenas 1 elemento!" );
+         else {
+              q = p->prox;                           // inicializa os ponteiros auxiliares
+              t = q->prox;
+              while( t != NULL ){                    // inverte o sentido do apontamento de cada registro, até chegar no último
+                     q->prox = p;
+                     p = q;                          // anda pela lista
+                     q = t;
+                     t = t->prox;
+              } // while( t != NULL )
+              q->prox = p;                           // altera o ponteiros do último
+              p = *l;                                // primeiro aponta para NULL
+              p->prox = NULL;
+              *l = q;                                // inverte o início da lista
+              printf( "\n Lista invertida!" );
+         } // if( p->prox == NULL )
+    } // if( *l == NULL ) 
 
 }
-
-
 
 /*************************************************** 
  * consulta nome                                   *
@@ -434,6 +507,40 @@ void consulta_nome( NODO *l ){
  ***************************************************/ 
 void inserir_antes( NODO** l ){
      
+      int cod;                                         // código de referência 
+    NODO* p;                                         // ponteiro auxiliar
+    NODO* ant;                                       // ponteiro auxiliar
+
+    NODO* no =  ( NODO * ) malloc ( sizeof( NODO ) ); // aloca novo espaço em memória
+    if( no != NULL ){                                 // verifica se conseguiu alocar memória para o novo registro
+              entrada_dados( no );                    // lê dados     
+                   
+              if( *l != NULL ){                       // verifica se a lista esta vazia 
+                  printf( "\n Codigo de referencia: " );
+                  fflush( stdin );                    // limpa buffer do teclado e faz a entrada de dados
+                  scanf( "%d", &cod );     
+                  
+                  p = *l;                             // posiciona auxiliar
+                  while( ( p->info.codigo != cod ) && ( p->prox != NULL ) ){ // procura por codigo de referencia
+                           ant = p;                   // guarda anterior
+                           p = p->prox;               // anda pela lista                      
+                  } // while( ( p->info.codigo != cod ) && ( p != NULL ) )
+                  
+                  if( p->info.codigo == cod ){                  
+                      no->prox = p;
+                      if( p == *l )                   // será o primeiro registro
+                          *l = no;                          
+                      else
+                           ant->prox = no; 
+                      printf( "\n Registro incluido!" );                    
+                  } // if( p->info.codigo == cod )
+                  else
+                      printf( "\n Codigo de referencia nao encontrado!" );
+              }// if( *l != NULL )   
+			  else printf("\n Lista vazia!"); 
+        } // if
+        else
+             printf( "\n Problema na entrada de dados!" );
 
 }
 
@@ -447,6 +554,36 @@ void inserir_antes( NODO** l ){
  ***************************************************/ 
 void inserir_depois( NODO** l ){
      
+    int cod;                                         // código de referência 
+    NODO* p;                                         // ponteiro auxiliar
+    NODO* ant;                                       // ponteiro auxiliar
+
+    NODO* no =  ( NODO * ) malloc ( sizeof( NODO ) ); // aloca novo espaço em memória
+    if( no != NULL ){                                 // verifica se conseguiu alocar memória para o novo registro
+              entrada_dados( no );                    // lê dados     
+                   
+              if( *l != NULL ){                       // verifica se a lista esta vazia 
+                  printf( "\n Código de referência: " );
+                  fflush( stdin );                    // limpa buffer do teclado e faz a entrada de dados
+                  scanf( "%d", &cod );     
+                  
+                  p = *l;                             // posiciona auxiliar
+                  while( ( p->info.codigo != cod ) && ( p->prox != NULL ) ){ // procura por código de referencia
+                           p = p->prox;               // anda pela lista                      
+                  } // while( ( p->info.codigo != cod ) && ( p != NULL ) )
+                  
+                  if( p->info.codigo == cod ){                  
+                      no->prox = p->prox;
+                      p->prox = no;
+                      printf( "\n Registro incluido!" );                    
+                  } // if( p->info.codigo == cod )
+                  else
+                      printf( "\n Código de referência não encontrado!" );
+              } // if( *l != NULL )
+			  else printf("\n Lista vazia!");    
+        } // if
+        else
+             printf( "\n Problema na entrada de dados!" );
  
 }
 
@@ -458,6 +595,91 @@ void inserir_depois( NODO** l ){
  * saida   : nenhuma                               *
  **************************************************/ 
 void conta_nodo( NODO** l ){
+    NODO* aux;                                      // ponteiro auxiliar para percorrer a lista
+     int conta = 0;                                  // contador
      
+    if( *l == NULL )                                // verifica se a lista esta vazia
+         printf( "Lista vazia!" );
+     else{
+          aux = *l;                                  // posiciona o ponteiro auxiliar no início da lista
+          while( aux != NULL ){
+                 conta++;
+                 aux = aux->prox;                    // passa para o próximo registro
+          } // while( aux != NULL )
+                 
+          printf( "\n Número de registro(s) na lista: %d", conta );
+     } // fim if( *l == NULL )
 
 }
+void ordena_selecao( NODO* *l ){
+    //int tempoIni = 0; // pega o tempo inicial
+    //int tempoFim = 0; // pega o tempo final
+    //int seg = 0;      // tempo em segundos 
+    float seg;          // tempo em milisegundos 
+    time_t tempoIni, tempoFim;    
+    int t=0, c=0;
+    NODO *p = *l;
+
+    tempoIni = time(NULL); 
+    if( p == NULL )
+         printf("\n Lista vazia ");
+    else
+         if( p->prox == NULL )
+             printf("\n Lista com apenas um elemento ");
+         else{
+                   NODO *q, *menor;       // ponteiros auxiliares, estacomo LISTA *q, *menor
+                   INFORMACAO aux;
+                   while( p->prox != NULL ){
+                       q= p->prox;          // reposiciona os ponteiros na lista
+                       menor= p;
+                       while( q != NULL ){
+                              if( menor->info.codigo > q->info.codigo ) // verifica se encontrou um código menor
+                                  menor= q; // guarda o endereço do menor
+                              c++;
+                              q= q->prox;    
+                       } 
+                       if( menor != p ){    // realiza a troca, posicionando o menor em ordem crescente
+                           aux= p->info;
+                           p->info= menor->info;
+                           menor->info= aux;
+                           t++;
+                       }
+                       //imprime_lista(*l);
+                       p= p->prox;          // anda pela lista até ordenar todos os registros
+                   }
+                   printf("\n Trocas: %d - Comparações: %d", t, c);
+                   _sleep(1000); // segura a execucao do codigo pelo tempo em milisegundos passado por parametro, neste caso em 1 segundo
+                   tempoFim = time(NULL);
+                   seg = tempoFim - tempoIni;    
+                   printf("\n Lista ordenada em %f milisegundos ", seg);
+              }
+}
+
+
+NODO* f(NODO* list, int cod){
+
+    while( list != NULL ){
+      if( list->info.codigo != cod )
+          return ( list );
+      list = list->prox;
+    }         
+    return ( NULL );
+}
+
+void f2( NODO **l, int cod ){
+    NODO* p = *l;
+    while( ( p != NULL ) && ( p->info.codigo != cod ))
+             p = p->prox;
+    if( p != NULL ){
+        if( p == *l )
+            *l = p->prox;
+        else{
+            NODO *ant= *l;
+            while( ant->prox != p )
+                   ant = ant->prox;
+            ant = p->prox;
+        } 
+        free( p );
+    }
+}
+
